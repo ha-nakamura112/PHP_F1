@@ -1,0 +1,52 @@
+.signUp-main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-top:150px;
+}
+.signUp-main h1 {
+  color: #333333;
+  padding-bottom: 50px;
+}
+
+
+.signUp-btn-wrap {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 10px;
+}
+
+.signUp-btn {
+  border-radius: 5px;
+  background-color: #4EA1A5;
+  border: 1px solid #4EA1A5;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 18px;
+  padding: 10px 50px;
+  height: 40px;
+  width:200px;
+  margin-top: 50px;
+}
+
+.signUp-btn:hover {
+  background-color: #72acaf;
+  cursor: pointer;
+}
+.moveToLogin {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px 0 50px 0 ;
+  text-align: center;
+}
+
+.moveToLogin > a {
+text-decoration: none;
+color: #4EA1A5;
+}

@@ -1,0 +1,27 @@
+*{
+  margin: 0;
+  padding: 0;
+}
+
+td,th{
+  width: fit-content;
+  height: fit-content;
+  padding: 1%;
+  border: 1px solid #8888;
+  text-align: center;
+}
+
+td:last-child{
+  width: 10vh;
+}
+
+a{
+  text-decoration: none;
+  color: #8888;
+  display: flex;
+}
+
+a:hover{
+  background-color: #8888;
+  color: whitesmoke;
+}

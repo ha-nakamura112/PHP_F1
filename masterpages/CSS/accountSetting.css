@@ -1,0 +1,130 @@
+.accountSetting-main {
+  display: flex;
+  flex-direction: column;
+  row-gap: 10px;
+  align-items: center;
+  width: 100%;
+}
+
+/* ACCOUNT SETTING FORM */
+.accountSetting-form {
+  display: flex;
+  flex-direction: column;
+  row-gap: 20px;
+  width: 40%;
+}
+
+.accountSetting-form aside {
+  display: flex;
+  flex-direction: column;
+  width: 48%;
+}
+
+.accountSetting-form select {
+  height: 5vh;
+  width: 40%;
+  border-radius: 5px;
+}
+
+.accountSetting-form input {
+  border-radius: 5px;
+  border:1px solid #8888;
+  height: 5vh;
+  color: #333333;
+}
+
+.accountSetting-form label{
+  display: flex;
+  column-gap: 1vh;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333333;
+}
+
+::placeholder {
+  padding: 2%;
+  color: #888888;
+}
+
+.required {
+  color: #D14F1A;
+}
+
+.accountSetting-form  h5 {
+  display: flex;
+  column-gap: 1vh;
+  font-size: 20px;
+  color: #333333;
+}
+
+.accountSetting-form  [type=file] {
+ 
+  border:none;
+  width: 500px;
+}
+
+.accountSetting-form  input {
+  height: 30px;
+  padding: 3px 10px;
+  font-size: 16px;
+}
+
+.accountSetting-section {
+  display: flex;
+  flex-direction: column;
+  row-gap: 5px;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  width: 100%;
+}
+.accountSetting-section select {
+  height: 30px;
+}
+.accoutSetting-name {
+  display: flex;
+  flex-direction: row;
+  column-gap: 20px;
+}
+.accoutSetting-name aside {
+  display: flex;
+  flex-direction: column;
+  row-gap: 5px;
+}
+
+.accountSettoing-pic {
+  display: flex;
+  flex-direction: column;
+  row-gap: 20px;
+}
+
+.accountSetting-btn {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 10px;
+}
+
+.accountSetting-form  .save-btn {
+  border-radius: 5px;
+  background-color: #4EA1A5;
+  border: 1px solid #4EA1A5;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 18px;
+  padding: 10px 50px;
+  height: 40px;
+  width: 150px;
+}
+
+.accountSetting-btn  .save-btn:hover {
+  background-color: #72acaf;
+  cursor: pointer;
+}
+
+
+
+
+

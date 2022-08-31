@@ -1,0 +1,95 @@
+
+
+
+.postList-article {
+  width: 500px;
+  height: 150px;
+  border: 1px solid #cecece;
+  background-color: #ffffff;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.your-post-wrap {
+  padding: 10px 20px 10px 10px;
+  display: flex;
+  flex-direction: row;
+  column-gap: 15px;
+  align-items: center;
+  width: 100%;
+
+}
+
+.your-post-wrap img {
+  width: 130px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+
+.your-post-article {
+display: flex;
+flex-direction: column;
+row-gap: 5px;
+color: #555555;
+width: 100%;
+
+
+}
+
+.your-post-article div {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.your-post-article time {
+  font-size: 12px;
+  color: #888888;
+}
+
+.your-post-article aside {
+  font-size: 12px;
+  color: #888888;
+  column-gap: 10px;
+  display: flex;
+}
+
+.your-post-article .edit {
+  color: #555555;
+}
+
+.your-post-article .edit:hover {
+  color: #8888888f;
+  cursor: pointer;
+}
+
+.delete {
+  color: #D14F1A;
+}
+
+.delete:hover {
+  color: #d14e1ab6;
+  cursor: pointer;
+}
+
+.yourPost-p > p {
+  width: 300px;
+  height: 50px;
+}
+.your-post-article h4 {
+  width: 300px;
+  overflow: hidden;
+}
+.yourPost-p {
+  word-wrap: break-word;
+  overflow: hidden;
+}
+
+.yourposth4 {
+  color: #333333;
+}

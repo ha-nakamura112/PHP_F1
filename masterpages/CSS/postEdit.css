@@ -1,0 +1,82 @@
+
+/* postedit-user */
+
+.postEdit-form img {
+  width: 130px;
+  height: 100px;
+  object-fit: cover;;
+}
+
+.postEdit-form {
+  display: flex;
+  flex-direction: column;
+  row-gap: 1vh;
+}
+
+.postEdit-form  input {
+  border-radius: 5px;
+  border:1px solid #8888;
+  height: 5vh;
+  color: #333333;
+  margin-bottom: 5vh;
+  width: 100%;
+  padding: 3px 10px;
+  font-size: 14px;
+}
+
+.postEdit-form button {
+  border-radius: 5px;
+  background-color: #4EA1A5
+  ;
+  border: 1px solid #4EA1A5;
+  color: white;
+  height: 5vh;
+  width: 30%;
+  margin-top: 5vh;
+}
+
+.postEdit-form  textarea {
+  border-radius: 5px;
+  height: 15vh;
+  width: 100%;
+  border:1px solid #8888;
+  padding: 3px 10px;
+  font-size: 14px;
+}
+
+.postEdit-formlabel{
+  display: flex;
+  font-size: 18px;
+  font-weight: 600;
+  color: #333333;
+}
+
+.postEdit-form article {
+  display: flex;
+  column-gap: 2vh;
+  height: 8vh;
+}
+
+.postEdit-form article > label {
+  color: #4EA1A5;
+  display: flex;
+  column-gap: 2vh;
+  width: fit-content;
+}
+
+.postEdit-form
+ [type=file] {
+  color: #555555;
+  border: none;
+  width: 500px;
+  height: fit-content;
+}
+
+.postEdit-form  [for="postImg"]{
+  height: 5vh;
+}
+
+.postEdit-form .button{
+  display: flex;
+  justify-content: center;
+}

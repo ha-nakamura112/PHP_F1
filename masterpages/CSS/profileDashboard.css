@@ -1,0 +1,63 @@
+
+.yourProfile-form {
+    display: flex;
+    flex-direction: column;
+    row-gap: 20px;
+    width: 60%;
+}
+
+.yourProfile-form label {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333333;
+}
+
+.yourProfile-btn {
+    display: flex;
+    justify-content: center;
+}
+
+.yourProfile-article   [type=file] {
+    border:none;
+    width: 500px;
+  }
+  
+.yourProfile-btn > button {
+    border-radius: 5px;
+    background-color: #4EA1A5;
+    border: 1px solid #4EA1A5;
+    color: white;
+    height: 5vh;
+    width: 40%;
+    margin-top: 5vh;
+  }
+
+.yourProfile-btn > button:hover {
+    background-color: #72acaf;
+    cursor: pointer;
+  }
+  
+.yourProfile-textarea {
+    border-radius: 5px;
+    height: 20vh;
+    width: 100%;
+    border:1px solid #8888;
+    resize: none;
+    font-size: 16px;
+    padding: 5px;
+}
+  
+  
+.yourProfile-article {
+    display: flex;
+    column-gap: 4vh;
+    width: 100%;
+}
+  
+.yourProfile-form img {
+    width: 130px;
+    height: 130px;
+    object-fit: cover;
+    border-radius: 50% 50%;
+}
+  
