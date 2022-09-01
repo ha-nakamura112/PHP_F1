@@ -10,6 +10,7 @@
 
     </ul>
   </div>
+  <div class='horizontal-list'>
   <div class="content">
 
 

@@ -1,10 +1,10 @@
-<!-- add two hidden forms,1's value badge1 +3 default: a:edit -->
 <?php
   include '../configfinal.php';
 
-  $dbCon = new mysqli($dbServerName,$dbUserName,$dbpass,$dbname);
-  if($dbCon->connect_error){
-    die("connection error");
+  if(!isset($_SESSION['token'])){
+    $token_rondom = openssl_random_pseudo_bytes(16);
+    $token = bin2hex($token_rondom);
+    $_SESSION['token'] = $token;
   }
 ?>
 
@@ -66,13 +66,14 @@ include '../masterpages/logOutHeader.php';
         <label for="refImg">References(email confirmed)</label>
         <article>
           
-          <input type="file" name="refImg">
+          <input type="file" name="refImg" value="">
           <!-- <input type="hidden" name="badge1" value="b"> -->
         </article>
         <label for="tamImg">References(from Tamwood)</label>
         <article>
-          <input type="file" name="tamImg">
+          <input type="file" name="tamImg" value="">
         </article>
+        <input type="hidden" name="token" value="<?php echo $_SESSION['token'];?>">
       </section>
       <section class="signUp-btn-wrap">
         <button class="signUp-btn" type="submit">Sign up</button>
@@ -86,67 +87,79 @@ include '../masterpages/logOutHeader.php';
   include '../masterpages/footer.php';
   ?>
 
-  <?php
+<?php
 if($_SERVER['REQUEST_METHOD']=='POST'){
-
-  if($_POST['fname'] != '' && $_POST['lname'] != '' && $_POST['atype'] != '' && $_POST['dob'] != '' && $_POST['email'] != '' && $_POST['conPass'] != '' && $_POST['pass'] != '' && $_FILES['profImg'] != '' ){
-    $fname = $_POST['fname'];
-    $lname = $_POST['lname']; 
-    $atype = $_POST['atype'];
-    $dob = $_POST['dob']; 
-    $email = $_POST['email'];
+  //check token to verify 
+  if(isset($_POST['token']) && $_POST['token'] === $_SESSION['token']){
+    if($_POST['fname'] != '' && $_POST['lname'] != '' && $_POST['atype'] != '' && $_POST['dob'] != '' && $_POST['email'] != '' && $_POST['conPass'] != '' && $_POST['pass'] != '' && $_FILES['profImg'] != '' ){
+      if(!filter_var(filter_var($_POST["email"],FILTER_SANITIZE_EMAIL),FILTER_VALIDATE_EMAIL)){
+        echo 'invalid';
+      }else{
+        $fname = $_POST['fname'];
+        $lname = $_POST['lname']; 
+        $atype = $_POST['atype'];
+        $dob = $_POST['dob']; 
+        $email = $_POST['email'];
     
-    //should check img
-    $profdestDir = './img/profile_img/';
-    if(uploadfile($profdestDir,'profImg')==='true'){
-      $profImg = $_FILES['profImg']['name'];
-      $refImg = $_FILES['refImg']['name'];
-      $tamImg = $_FILES['tamImg']['name'];
+        // $profdestDir = './img/profile_img/';
+        // $refdestDir = './img/ref_img/';
+        // $tamdestDir = './img/tam_img/';
+        //you don't need to if it's upload or not,but if it's uploaded should
+        if (is_uploaded_file($_FILES['profImg']['tmp_name'])){
+          if(uploadfile('./img/profile_img/','profImg')==='true'){
+          $profImg = $_FILES['profImg']['name'];
+          }
+          $refImg = $_FILES['refImg']['name'];
+          $tamImg = $_FILES['tamImg']['name'];
+          }
+          // to check if there are values in $refImg & $tamImg to give user badge
+          if(file_size('refImg') == true && file_size('tamImg') == true){
+            $badge1 = 'waiting';
+            $badge2 = 'waiting';
+          }elseif(file_size('refImg') == true && file_size('tamImg') != true){
+            $badge1 = 'waiting';
+            $badge2 = 'unsubmitted';
+          }elseif(file_size('refImg') != true && file_size('tamImg') == true){
+            $badge1 = 'waiting';
+            $badge2 = 'unsubmitted';
+          }
 
-      print_r($refImg);
-      print_r($tamImg);
-    }
+        $_SESSION['timeout'] = time()+900;
 
-    $_SESSION['timeout'] = time()+900;
-    if($_POST['pass'] == $_POST['conPass']){
-        $pass = password_hash($_POST['pass'],PASSWORD_BCRYPT,["cost"=>5]); 
-      }else{
-        echo 'password confirmation is not valid';
-      }
-      
-      // to check if there are values in $refImg & $tamImg to give user badge
-      //
-      if(isset($_FILES['refImg']['name']) && isset($_FILES['tamImg']['name'])){
-        $badge1 = 'waiting';
-        $badge2 = 'waiting';
-      }elseif(isset($_FILES['refImg']['name']) && !isset($_FILES['tamImg']['name'])){
-        $badge1 = 'waiting';
-        $badge2 = 'unsubmitted';
-      }elseif(!isset($_FILES['refImg']['name']) && isset($_FILES['tamImg']['name'])){
-        $badge1 = 'unsubmitted';
-        $badge2 = 'waiting';
-      }
-      
-      $insertCmd = "INSERT INTO user_tb(firstName, lastName, atype, dob, email, pass, profImg, refImg, badge1, tamImg, badge2,profileContent) VALUES ('$fname','$lname','$atype','$dob','$email','$pass','$profImg','$refImg','$badge1','$tamImg','$badge2','no posted')"; 
-      if($dbCon->query($insertCmd)){
-        echo "<h1>Succesfully</h1>"; //checkmark icon 
-        $_SESSION['user'] = $email;
-      
-        if($atype == 'Admin'){
-          $dbCon->close();
-          header("Location: http://localhost/fproject/adminuser.php");// adminHP
+        if($_POST['pass'] != $_POST['conPass']){
+          echo 'password confirmation is not valid';
         }else{
-          $dbCon->close();
-          header("Location: http://localhost/fproject/yourpost.php"); //userHp
+          if(strlen($_POST['pass']) < 8){
+            echo '<h1>password should be more longer</h1>';
+          }else{
+
+          $pass = password_hash($_POST['pass'],PASSWORD_BCRYPT,["cost"=>5]); 
+          $insertCmd = "INSERT INTO user_tb(firstName, lastName, atype, dob, email, pass, profImg, refImg, badge1, tamImg, badge2,profileContent) VALUES ('$fname','$lname','$atype','$dob','$email','$pass','$profImg','$refImg','$badge1','$tamImg','$badge2','no posted')"; 
+            if($dbCon->query($insertCmd)){
+            echo "<h1>Succesfully</h1>";
+            $_SESSION['user'] = $email;
+        
+            if($atype == 'Admin'){
+            $dbCon->close();
+            header("Location: http://localhost/fproject/pages/adminuser.php");// adminHP
+            }else{
+              $dbCon->close();
+              header("Location: http://localhost/fproject/pages/yourpost.php"); //userHp
+            }
+            }
+          }
         }
-      }else{
-        echo "<h1>database error</h1>";
       }
-      $dbCon->close();
-      } 
-    }
+    }else{
+      echo 'fill out every answers';
+    }   
+  }else{
+    echo 'invalid';
+  }
+}
 
 ?>
+
 
   </body>
   </html>

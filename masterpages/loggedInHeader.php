@@ -1,3 +1,6 @@
+<?php
+  
+?>
 <!DOCTYPE html>
 <html class="navFooter-html" lang="en">
 
@@ -23,7 +26,8 @@
   <link rel="stylesheet" href="../masterpages/css/profileDashboard.css">
   <link rel="stylesheet" href="../masterpages/css/logIn.css">
   <link rel="stylesheet" href="../masterpages/css/signUp.css">
-  <link rel="stylesheet" href="../masterpages/css/postEdit.css">
+  <link rel="stylesheet" href="../masterpages/css/adminUser.css">
+  <link rel="stylesheet" href="../masterpages/css/adminpost.css">
 
 <title>Document</title>
 </head>
@@ -45,7 +49,7 @@
     </nav>
     <!-- LOGIN USER NAME -->
     <?php
-         echo '<aside class="hello">Hello,'.$user['firstName'].'</aside>';
+         echo '<aside class="hello">Hello, '.$user['firstName'].'</aside>';
        ?>
     <!-- SETTING -->
     <div class="setting-wrap">
@@ -53,7 +57,7 @@
         <li class="setting-icon"><a href="#"><i class="fa-solid fa-gear"></i></a>
           <ul class="subMenu">
             <li><a href="./yourPost.php">Dash Board</a></li>
-            <li><a href="./loginCon.php">Log out</a></li>
+            <li><a href="./yourpost.php?action=exit">Log out</a></li>
           </ul>
         </li>
       </ul>

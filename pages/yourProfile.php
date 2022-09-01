@@ -1,10 +1,5 @@
 <?php
   include '../configfinal.php';
-  
-  $dbCon = new mysqli($dbServerName,$dbUserName,$dbpass,$dbname);
-  if($dbCon->connect_error){
-    die("connection error");
-  }
 
   if(!isset($_SESSION['user'])){
     header("Location: "); //loginpage
@@ -40,10 +35,11 @@
           <!-- FOOTER -->
     <?php include '../masterpages/footer.php' ?>
 
-  <?php
+    <?php
 
 if($_SERVER['REQUEST_METHOD']=='POST'){
   if(uploadfile('./img/profile_img/','profImg')==='true'){
+    unlink("./img/profile_img/".$user['profImg']);
     $profImg = $_FILES['profImg']['name'];
     $content = htmlspecialchars($_POST['content'], ENT_QUOTES);
   }
@@ -52,7 +48,7 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
   
   $profCmd = "UPDATE user_tb SET profImg='".$profImg."', profileContent='".$content."' WHERE email='$useremail'";
   if($dbCon->query($profCmd) === true){
-    $dbCon->close();
+    
     // session_unset();
     // session_destroy();
     header("Location: http://localhost/fproject/pages/yourpost.php");

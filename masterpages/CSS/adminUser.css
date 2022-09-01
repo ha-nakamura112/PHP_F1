@@ -1,0 +1,47 @@
+.horizontal-list {
+  overflow-x: auto;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+  width: 100%;
+  
+
+
+}
+
+.item {
+  /* 横スクロール用 */
+  display: inline-block;
+  width: 90%;
+  padding-bottom: 5px;
+
+}
+.adminUser-main {
+  background-color: #FBFBFB;
+}
+.adminUser-main table {
+  border-collapse: collapse;
+  border-spacing: 0;
+  
+}
+
+
+.adminUser-main table tr {
+padding: 20px;
+
+}
+.adminUser-main table td {
+padding: 20px;
+
+}
+.adminUser-main table tr th{
+padding: 20px;
+color: #333333;
+  font-weight: 400;
+}
+.filedName{
+  background-color: #9d9d9d;
+  color: #fff!important
+}
+.adminUser-main table tr:nth-child(odd) {
+  background-color: rgb(237, 237, 237);
+}

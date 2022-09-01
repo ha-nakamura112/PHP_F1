@@ -1,10 +1,5 @@
 <?php
-  include '../configfinal.php';
-  $dbCon = new mysqli($dbServerName,$dbUserName,$dbpass,$dbname);
-  if($dbCon->connect_error){
-    die("connection error");
-  }
-
+  include './configfinal.php';
 
   if(!isset($_SESSION['post_id'])){
     header("Location: http://localhost/fproject/pages/loginCon.php"); //loginpage

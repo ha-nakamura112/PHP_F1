@@ -1,9 +1,5 @@
 <?php
   include '../configfinal.php';
-  $dbCon = new mysqli($dbServerName,$dbUserName,$dbpass,$dbname);
-  if($dbCon->connect_error){
-    die("connection error");
-  }
 
   if(!isset($_SESSION['user'])){
     header("Location: http://localhost/fproject/pages/loginCon.php"); //loginpage
@@ -18,6 +14,7 @@
   // timeout(time(),$dbCon);
   // to reset timeout is it correct?
   ?>
+
 
 <?php
   include '../masterpages/loggedInHeader.php';
@@ -65,14 +62,14 @@
  
           $postCmd = "INSERT INTO post_tb(title, postContent,user_id, p_date, imgName) VALUES ('".$title."','".$content."','".$userid."','".$date."','".$postImg."')"; 
           if($dbCon->query($postCmd)){
-             echo "Posted";
+             echo "<h4>Posted!</h4>";
             $_SESSION['user'] = $email;
             $dbCon->close();
           }else{
-              echo "<h1>Image is too big</h1>";
+              echo "<h3>Image is too big</h3>";
           }
         }else{
-          echo "<h1>Please Upload an Image</h1>";
+          echo "<h3>Please Upload an Image</h3>";
         }
       }   
 ?>

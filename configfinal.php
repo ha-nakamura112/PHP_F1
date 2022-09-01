@@ -2,25 +2,35 @@
 $dbUserName = "root";
 $dbServerName = "localhost";
 $dbpass = "";
-$dbname = "final_db"; //dbname connects to specific 
+$dbname = "final_db"; 
+
 session_start();
-
-function specify($value){
-  if(!isset($value)){
-    header("Location: http://localhost/fproject/loginCon.php"); //loginpage
-  }else{
-    $user = $value;
+$dbCon = new mysqli($dbServerName,$dbUserName,$dbpass,$dbname);
+  if($dbCon->connect_error){
+    die("connection error");
   }
-}
+
+  if(isset($_GET['action']) && $_GET['action'] == 'exit'){
+        $dbCon->close;
+        session_unset();
+        session_destroy();
+        header("Location: http://localhost/fproject/pages/loginCon.php");
+  }
 
 
- //place should be like './files/img'
+
+
+
+//function part
+
+
+ //destDir should be like './files/img'
  function uploadfile($destDir,$pName){
     $sourceFile = $_FILES[$pName];
     $sourceFileDetails = pathinfo($sourceFile['name']);
     $imgArray = (" jpg,png,jpeg,gif,tiff,psd,pdf,eps");
     if(strpos($imgArray,$sourceFileDetails['extension']) !=0 && getimagesize($sourceFile['tmp_name'])){
-      if($sourceFile['size']<4000000000){
+      if($sourceFile['size']<400000000){
           if(move_uploaded_file($sourceFile['tmp_name'],$destDir.$sourceFile['name'])){
             return 'true';
           }else{
@@ -29,12 +39,24 @@ function specify($value){
         }
       }
   }
+  //check milad
+
+  function file_size($name){
+    $sourceFile =$_FILES[$name];
+    if($sourceFile['size'] > 0){
+      return $sourceFile['size'];
+      return true;
+    }else{
+      return true;
+    }
+
+  }
 
   //should think
-  function badge_check($name,$name2){
+  function badge_check($name1,$name2){
     $badge1 =" ";
     $badge2 =" ";
-    if(isset($_FILES['$name']) && isset($_FILES['$name2'])){
+    if( file_size($name1) && file_size($name2)){
       $badge1 = 'waiting';
       $badge2 = 'waiting';
     }elseif(isset($_FILES['$name']) && !isset($_FILES['$name2'])){
@@ -47,43 +69,6 @@ function specify($value){
 
     return ['$badge1', '$badge2'];
   }
-
-
-
-
-    // function Connect(){
-
-
-
-      //     $dbUserName = "root";
-//     $dbServerName = "localhost";
-//     $dbpass = "";
-//     $dbname = "final_db";
-//     $dbCon = new mysqli($dbServerName,$dbUserName,$dbpass,$dbname);
-//     if($dbCon->connect_error){
-//       die('connection error');
-//       return 'false';
-//     }else{
-//       return $dbCon;
-//     }
-//   }
-  
-//   function find_userName($tableName,$userName,$fieldname){
-//     $dbCon = db_connect();
-//     if($dbCon !== false){
-//       $selectCmd = "SELECT * FROM $tableName WHERE $fieldname = '$userName'";
-//       $result = $dbCon->query($selectCmd);
-//       if($result->num_rows() > 0){
-//         $user = $result->fetch_assoc();
-//         $dbCon->close();
-//         return $user;
-//       }else{
-//         $dbCon->close();
-//         return false;
-//       }
-
-//     }
-//   }
 
   function sanitize($value){
     $value = trim($value);
