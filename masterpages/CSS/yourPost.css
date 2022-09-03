@@ -37,8 +37,10 @@ flex-direction: column;
 row-gap: 5px;
 color: #555555;
 width: 100%;
-
-
+text-overflow: ellipsis;
+overflow: hidden;
+max-width: 500px;
+max-height: 150px;
 }
 
 .your-post-article div {
@@ -70,6 +72,7 @@ width: 100%;
 
 .delete {
   color: #D14F1A;
+  text-decoration: none;
 }
 
 .delete:hover {
@@ -86,8 +89,7 @@ width: 100%;
   overflow: hidden;
 }
 .yourPost-p {
-  word-wrap: break-word;
-  overflow: hidden;
+color: #555555;
 }
 
 .yourposth4 {

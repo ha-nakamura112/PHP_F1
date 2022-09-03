@@ -19,7 +19,6 @@
 <?php include '../masterpages/loggedInHeader.php'
   ?>
   <main class='postedit'>
-    <!-- should change action -->
     <?php include '../masterpages/dashboard01.php' ?>
     <form class="postEdit-form" method="POST" action="<?php echo $_SERVER['PHP_SELF']; ?>" enctype="multipart/form-data">
       <img src="<?php echo './img/post_img/'.
@@ -52,15 +51,16 @@
 
 <?php
  if($_SERVER['REQUEST_METHOD']=='POST'){
-  if(uploadfile('./img/post_img/','postImg')==='true'){
+  if(uploadfile('./img/post_img/','postImg')=='true'){
     $postImg = $_FILES['postImg']['name'];
-    $updateCmd = "UPDATE post_tb SET title='".$_POST['title']."',postContent='".$_POST['content']."',p_date='".$_POST['date']."',imgName='".$postImg."'  WHERE post_id = '$post'";
+    $updateCmd = "UPDATE post_tb SET title ='".$_POST['title']."',postContent='".$_POST['content']."',p_date='".$_POST['date']."',imgName='".$postImg."'  WHERE post_id = '$post'";
   
     if($dbCon->query($updateCmd) === true){
       $dbCon->close();
       echo "<h5>saved<h5>"; 
     }else{
       echo $dbCon->error;
+      $dbCon->close();
     }
   }
  }

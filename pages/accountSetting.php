@@ -1,5 +1,5 @@
 <?php
-  include '../configfinal.php';
+  include './configfinal.php';
 
   if(!isset($_SESSION['user'])){
     header("Location: http://localhost/fproject/pages/loginCon.php"); //loginpage
@@ -80,13 +80,13 @@ include '../masterpages/loggedInHeader.php';
       <label for="refImg">References(email confirmed)</label>
       <article>
       <?php
-         echo '<input type="file" name="refImg">';
+         echo '<input type="file" name="refImg" value="'.$user['refImg'].'">';
        ?>
       </article>
       <label for="tamImg">References(from Tamwood)</label>
       <article>
       <?php
-         echo '<input type="file" name="tamImg">';
+         echo '<input type="file" name="tamImg" value="'.$user['tamImg'].'">';
        ?>
       </article>
     </section>
@@ -106,23 +106,37 @@ include '../masterpages/loggedInHeader.php';
 <?php 
   if($_SERVER['REQUEST_METHOD']=='POST'){
 
-    if(uploadfile('./img/profile_img/','profImg')==='true' && (uploadfile('./img/ref_img/','refImg')==='true' && uploadfile('./img/tam_img/','tamImg')==='true')){
+    if(uploadfile('./img/profile_img/','profImg')==='true' ){
       unlink("./img/profile_img/".$user['profImg']);
       $profImg = $_FILES['profImg']['name'];
+    } 
+    
+    //if user already submitted document and it's still waiting
+    if(isset($user['refImg']) && $user['badge1'] != 'verified'){
+      //file name is updated or still same, and badge1 is waiting
       $refImg = $_FILES['refImg']['name'];
-      $tamImg = $_FILES['tamImg']['name'];
+      $badge1 ='waiting';
+    }else{
+      //if there is no document and then user submit document
+      if(uploadfile('./img/ref_img/','refImg')=='true'){
+        $refImg = $_FILES['refImg']['name'];
+        $badge1 ='waiting';
+      }else{
+        $refImg = "";
+        $badge1 ='unsubmitted';
+      }
     }
-    if(file_size('refImg') == true && file_size('tamImg') == true){
-      $badge1 = 'waiting';
+    if(isset($user['tamImg']) &&  $user['badge2'] != 'verified'){
+      $tamImg = $_FILES['tamImg']['name'];
       $badge2 = 'waiting';
-    }elseif(file_size('refImg') == true && file_size('tamImg') != true){
-      unlink("./img/ref_img/".$user['refImg']);
-      $badge1 = 'waiting';
-      $badge2 = 'unsubmitted';
-    }elseif(file_size('refImg') != true && file_size('tamImg') == true){
-      unlink("./img/profile_img/".$user['profImg']);
-      $badge1 = 'waiting';
-      $badge2 = 'unsubmitted';
+    }else{
+      if(uploadfile('./img/tam_img/','tamImg')=='true'){
+        $tamImg = $_FILES['tamImg']['name'];
+        $badge2 = 'waiting';
+      }else{
+        $tamImg = '';
+        $badge2 ='unsubmitted';
+      }
     }
     
     if(password_verify($_POST['pass'],$user['pass'])){

@@ -1,9 +1,9 @@
 <?php
-  include '../configfinal.php';
+  include './configfinal.php';
 
 //$_SESSION['user'] always has user email, and $_SESSION['admin'] is user_id
   if(!isset($_SESSION['user'])){
-    header("Location: http://localhost/fproject/pages/loginCon.php"); //loginpage
+    header("Location: http://localhost/fproject/pages/loginCon.php"); 
   }else{
     $email = $_SESSION['user'];
     $logCmd = "SELECT * FROM user_tb WHERE email='$email'";
@@ -13,13 +13,10 @@
     }
   }
 
-  //
   if(isset($_GET['user'])){ 
     $_SESSION['user']=$user['email'];
-    $_SESSION['admin']= $_GET['user'];//
+    $_SESSION['admin']= $_GET['user'];
     $dbCon->close();
-    print_r($_SESSION['user']); //akane
-    print_r($_SESSION['admin']); //16
     header("Location: http://localhost/fproject/pages/adminEditUser.php");
   }
 
@@ -34,7 +31,6 @@
   }
  ?>
 
-
 <?php
   include '../masterpages/loggedInHeader.php';
   ?>
@@ -48,15 +44,15 @@
     foreach($userData as $fieldName => $value){
       echo "<th class='filedName'>".$fieldName."</th>";
     }
-    echo "<th class='filedName'>Delete</th>";
-    echo "</tr><thead><tbody class='item'>";
+    echo "<th class='filedName'>Edit</th>";
+    echo "</tr></thead><tbody class='item'>";
 
     foreach($userArray as $user){
       echo "<tr>";
       foreach($user as $userDetail){
-          echo "<th>".$userDetail."</th>";
+          echo "<td>".$userDetail."</td>";
       }
-      echo "<td><a href='./adminuser.php?user=".$user['user_id']."'>Edit</a></td>";
+      echo "<td><p class='admin-user-edit'><a href='./adminuser.php?user=".$user['user_id']."'>Edit</a></p></td>";
     }
       echo "</tr>";
       echo "</tbody></table>";

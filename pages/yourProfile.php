@@ -1,5 +1,5 @@
 <?php
-  include '../configfinal.php';
+  include './configfinal.php';
 
   if(!isset($_SESSION['user'])){
     header("Location: "); //loginpage
@@ -22,8 +22,7 @@
             <?php echo '<img src="./img/profile_img/'.$user['profImg'].'">';?>
             <label for="profImg">Profile image</label>
               <article class="yourProfile-article">
-                <input type="file"  name="profImg" value="<?php echo $user['profImg']; ?>">
-                <!-- value or required -->
+                <input type="file"  name="profImg">
               </article>
             <label for="content">Content</label>
             <textarea class="yourProfile-textarea" name="content"></textarea>
@@ -38,33 +37,20 @@
     <?php
 
 if($_SERVER['REQUEST_METHOD']=='POST'){
-  if(uploadfile('./img/profile_img/','profImg')==='true'){
+  if(uploadfile('./img/profile_img/','profImg')=='true'){
     unlink("./img/profile_img/".$user['profImg']);
     $profImg = $_FILES['profImg']['name'];
     $content = htmlspecialchars($_POST['content'], ENT_QUOTES);
-  }
   
-  $useremail = $user['email'];
-  
-  $profCmd = "UPDATE user_tb SET profImg='".$profImg."', profileContent='".$content."' WHERE email='$useremail'";
-  if($dbCon->query($profCmd) === true){
-    
-    // session_unset();
-    // session_destroy();
-    header("Location: http://localhost/fproject/pages/yourpost.php");
+    $useremail = $user['email'];
+    $profCmd = "UPDATE user_tb SET profImg='".$profImg."', profileContent='".$content."' WHERE email='$useremail'";
+    if($dbCon->query($profCmd) === true){
+      $dbCon->close();
+      header("Location: http://localhost/fproject/pages/yourpost.php");
+    }
+    echo $dbCon->error;
   }
-  echo $dbCon->error;
 }
-
-
-// $destDir = './img/profile_img';
-// $sourceFile = $_FILES['profImg'];
-// $sourceFileDetails = pathinfo($sourceFile['name']);
-// print_r($sourceFileDetails);
-// $imgArray = (" jpg,png,jpeg,gif,tiff,psd,pdf,eps");
-// if(strpos($imgArray,$sourceFileDetails['extension']) !=0 && getimagesize($sourceFile['tmp_name'])){
-//     if($sourceFile['size']<400000){
-//         if(move_uploaded_file($sourceFile['tmp_name'],$destDir.$sourceFile['name'])){
 ?>
 
 </body>

@@ -1,6 +1,5 @@
 <?php
-  include '../configfinal.php';
-
+  include './configfinal.php';
   if(!isset($_SESSION['token'])){
     $token_rondom = openssl_random_pseudo_bytes(16);
     $token = bin2hex($token_rondom);
@@ -45,7 +44,6 @@ include '../masterpages/logOutHeader.php';
       <label for="email">Email<div class="required">*</div></label>
       <input type="email" name="email" placeholder="example@woodhousing.com">
       </section>
-      <!-- should change pass and confirm -->
       <section  class="accountSetting-section">
       <label for="pass">Password<div class="required">*</div></label>
       <input type="password" name="pass">
@@ -55,19 +53,15 @@ include '../masterpages/logOutHeader.php';
       <input type="password" name="conPass">
       </section>
       <section class="accountSettoing-pic">
-        <!-- test for accepting img -->
-        <!-- required makes this input mandatory -->
-        <label for="profImg">Profile Picture<div class="required">*</div></label>
-        <article>
-   
-          <input type="file" name="profImg" accept="image/*" required>
-        </article>
 
-        <label for="refImg">References(email confirmed)</label>
+      <label for="profImg">Profile Picture<div class="required">*</div></label>
+      <article>
+         <input type="file" name="profImg" accept="image/*" required>
+       </article>
+
+      <label for="refImg">References(email confirmed)</label>
         <article>
-          
           <input type="file" name="refImg" value="">
-          <!-- <input type="hidden" name="badge1" value="b"> -->
         </article>
         <label for="tamImg">References(from Tamwood)</label>
         <article>
@@ -90,10 +84,12 @@ include '../masterpages/logOutHeader.php';
 <?php
 if($_SERVER['REQUEST_METHOD']=='POST'){
   //check token to verify 
-  if(isset($_POST['token']) && $_POST['token'] === $_SESSION['token']){
+  if(!isset($_POST['token']) || $_POST['token'] !== $_SESSION['token']){
+    echo 'invalid';
+  }else{
     if($_POST['fname'] != '' && $_POST['lname'] != '' && $_POST['atype'] != '' && $_POST['dob'] != '' && $_POST['email'] != '' && $_POST['conPass'] != '' && $_POST['pass'] != '' && $_FILES['profImg'] != '' ){
-      if(!filter_var(filter_var($_POST["email"],FILTER_SANITIZE_EMAIL),FILTER_VALIDATE_EMAIL)){
-        echo 'invalid';
+      if(!filter_var(filter_var($_POST['email'],FILTER_SANITIZE_EMAIL),FILTER_VALIDATE_EMAIL)){
+        echo 'email invalid';
       }else{
         $fname = $_POST['fname'];
         $lname = $_POST['lname']; 
@@ -104,28 +100,27 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
         // $profdestDir = './img/profile_img/';
         // $refdestDir = './img/ref_img/';
         // $tamdestDir = './img/tam_img/';
-        //you don't need to if it's upload or not,but if it's uploaded should
-        if (is_uploaded_file($_FILES['profImg']['tmp_name'])){
-          if(uploadfile('./img/profile_img/','profImg')==='true'){
+
+        if(uploadfile('./img/profile_img/','profImg')=='true' ){
+          // unlink("./img/profile_img/".$user['profImg']);
           $profImg = $_FILES['profImg']['name'];
-          }
+        } 
+        if(uploadfile('./img/ref_img/','refImg')=='true'){
           $refImg = $_FILES['refImg']['name'];
+          $badge1 ='waiting';
+        }else{
+          $refImg = "";
+          $badge1 ='unsubmitted';
+        }
+        if(uploadfile('./img/tam_img/','tamImg')=='true'){
           $tamImg = $_FILES['tamImg']['name'];
-          }
-          // to check if there are values in $refImg & $tamImg to give user badge
-          if(file_size('refImg') == true && file_size('tamImg') == true){
-            $badge1 = 'waiting';
-            $badge2 = 'waiting';
-          }elseif(file_size('refImg') == true && file_size('tamImg') != true){
-            $badge1 = 'waiting';
-            $badge2 = 'unsubmitted';
-          }elseif(file_size('refImg') != true && file_size('tamImg') == true){
-            $badge1 = 'waiting';
-            $badge2 = 'unsubmitted';
-          }
+          $badge2 = 'waiting';
+        }else{
+          $tamImg = '';
+          $badge2 ='unsubmitted';
+        }
 
         $_SESSION['timeout'] = time()+900;
-
         if($_POST['pass'] != $_POST['conPass']){
           echo 'password confirmation is not valid';
         }else{
@@ -139,13 +134,13 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
             echo "<h1>Succesfully</h1>";
             $_SESSION['user'] = $email;
         
-            if($atype == 'Admin'){
-            $dbCon->close();
-            header("Location: http://localhost/fproject/pages/adminuser.php");// adminHP
-            }else{
+              if($atype == 'Admin'){
               $dbCon->close();
-              header("Location: http://localhost/fproject/pages/yourpost.php"); //userHp
-            }
+              header("Location: http://localhost/fproject/pages/adminuser.php");// adminHP
+              }else{
+                $dbCon->close();
+                header("Location: http://localhost/fproject/pages/yourpost.php"); //userHp
+              }
             }
           }
         }
@@ -153,8 +148,6 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
     }else{
       echo 'fill out every answers';
     }   
-  }else{
-    echo 'invalid';
   }
 }
 

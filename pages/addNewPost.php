@@ -1,5 +1,5 @@
 <?php
-  include '../configfinal.php';
+  include './configfinal.php';
 
   if(!isset($_SESSION['user'])){
     header("Location: http://localhost/fproject/pages/loginCon.php"); //loginpage
@@ -24,7 +24,7 @@
   <?php
     include '../masterpages/dashboard01.php';
     ?>
-    <!-- should change action -->
+
   <form class="addNewPost-form" method="POST" action="<?php echo $_SERVER['PHP_SELF']; ?>" enctype="multipart/form-data">
       <label for="postImg">Image</label>
       <article class="addNewPost-article">
@@ -50,10 +50,8 @@
   
   
 <?php 
-  // if($_SERVER['REQUEST_METHOD']=='POST' && $_POST['title']!='' && $date = $_POST['date']!= '' && $_POST['content']!=''){
-      if($_SERVER['REQUEST_METHOD']=="POST"){
-        if(uploadfile('./img/post_img/','postImg')==='true'){
-
+    if($_SERVER['REQUEST_METHOD']=="POST"){
+      if(uploadfile('./img/post_img/','postImg')==='true'){
           $title = $_POST['title'];
           $date = $_POST['date'];
           $postImg = $_FILES['postImg']['name'];

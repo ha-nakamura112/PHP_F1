@@ -1,6 +1,3 @@
-<?php
-  
-?>
 <!DOCTYPE html>
 <html class="navFooter-html" lang="en">
 

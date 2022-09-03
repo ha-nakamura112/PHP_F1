@@ -1,6 +1,6 @@
 <?php
 //!important
-  include '../configfinal.php';
+  include './configfinal.php';
 
   if(!isset($_SESSION['user'])){
     header("Location: http://localhost/fproject/pages/loginCon.php"); //loginpage
@@ -36,25 +36,26 @@
 <?php
   include '../masterpages/loggedInHeader.php';
   ?>
-<main class="adminPost-main">
+<main class="adminUser-post">
 <?php
   include '../masterpages/dashboard01admin.php';
   ?>
 
   <?php
-    echo "<table><thead><tr>";
+    echo "<table class='horizontal-list-post'><thead class='iteme'><tr>";
     foreach($postData as $fieldName => $value){
-      echo "<th>".$fieldName."</th>";
+      echo "<th class='filedName' 
+      style='color: #fff;'>".$fieldName."</th>";
     }
-    echo "<th>Delete</th>";
-    echo "</tr><thead><tbody>";
+    echo "<th class='filedName' >Delete</th>";
+    echo "</tr></thead><tbody class='item'>";
 
     foreach($postArray as $post){
       echo "<tr>";
       foreach($post as $postDetail){
-        echo "<th>".$postDetail."</th>";
+        echo "<td>".$postDetail."</td>";
       }
-      echo "<td><a href='./adminPost.php?user=".$post['post_id']."'>Delete</a></td>";
+      echo "<td><a href='./adminPost.php?user=".$post['post_id']."'><p class='delete'>Delete</p></a></td>";
     }
       echo "</tr>";
       echo "</tbody></table>";

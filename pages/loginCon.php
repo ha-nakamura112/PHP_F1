@@ -1,7 +1,7 @@
 <?php
-include '../configfinal.php';
+include './configfinal.php';
 
-// to make rondom binary and convert it into a hexadecimal string representation
+// to make random binary and convert it into a hexadecimal string representation
 if(!isset($_SESSION['token'])){
   $token_rondom = openssl_random_pseudo_bytes(16);
   $token = bin2hex($token_rondom);
@@ -21,13 +21,15 @@ include '../masterpages/logOutHeader.php';
         </article>
         <article class="login-article02">
             <form class="login-form" method="POST" action="<?php echo $_SERVER['PHP_SELF']; ?>">
-                        <!-- to make token in hidden input -->
-                        <input type="hidden" name="token" value="<?php echo $_SESSION['token'];?>">
+            <!-- to make token in hidden input -->
+                <input type="hidden" name="token" value="<?php echo $_SESSION['token'];?>">
                 <label for="title">Email</label>
                 <input type="email" name="email" placeholder="  example@woodhousing.com">
                 <label for="pass">Password</label>
                 <input type="password" name="pass">
-                <button type="submit">LogIn</button>
+                <div class='login-btn' >
+                <button class='login-btn' type="submit">LogIn</button>
+</div>
                 <a href="./signUp.php">Create an account</a>
             </form>
         </article>
@@ -39,13 +41,15 @@ include '../masterpages/logOutHeader.php';
    <?php
       if($_SERVER['REQUEST_METHOD']=='POST'){
         //check token to verify 
-        if(isset($_POST['token']) && $_POST['token'] === $_SESSION['token']){
+        if(!isset($_POST['token']) || $_POST['token'] !== $_SESSION['token']){
+            echo 'invalid';
+        }else
           if(!isset($_POST['email']) || !isset($_POST['pass'])){
             echo 'input all sections';
-          }elseif(!filter_var(filter_var($_POST["email"],FILTER_SANITIZE_EMAIL),FILTER_VALIDATE_EMAIL)){
+          }else
+            if(!filter_var(filter_var($_POST["email"],FILTER_SANITIZE_EMAIL),FILTER_VALIDATE_EMAIL)){
             echo 'Invalid';
-          }else{
-
+            }else{
             $username = $_POST['email'];
             $pass = $_POST['pass'];
           
@@ -55,24 +59,22 @@ include '../masterpages/logOutHeader.php';
             $userDetails = $result->fetch_assoc();
             $hashpass = $userDetails['pass'];
             if(password_verify($pass,$hashpass)){
-              $_SESSION['user'] = $username;
-  
-              $dbCon->close();
-              $_SESSION['timeout'] = time()+900;
+                $_SESSION['user'] = $username;
+                $dbCon->close();
+                $_SESSION['timeout'] = time()+900;
 
-            if($userDetails['atype']=="Admin"){
-              header("Location: http://localhost/fproject/pages/adminuser.php"); 
-              //adminHP
-            }elseif($userDetails['atype']=="Student" || $userDetails['atype']=="Landlord"){ 
-              header("Location: http://localhost/fproject/pages/yourpost.php");
-            }
-          }else{
-            echo 'invalid';
-         }
+                switch($userDetails['atype']){
+                  case 'Admin':
+                    header("Location: http://localhost/fproject/pages/adminuser.php"); 
+                  break;
+                  default :
+                  header("Location: http://localhost/fproject/pages/yourpost.php");
+                }
+              }else{
+                echo 'invalid';
+          }
         }    
       }
-    }
-    echo 'invalid';
   }
     ?>
 </body>

@@ -1,5 +1,5 @@
 <?php
-  include '../configfinal.php';
+  include './configfinal.php';
   
   if(!isset($_SESSION['user'])){
     header("Location: http://localhost/fproject/pages/loginCon.php"); //loginpage
@@ -29,7 +29,7 @@
 
     switch($_GET['action']){
       case 'edit': 
-        header("Location: http://localhost/fproject/postEdit.php");
+        header("Location: http://localhost/fproject/pages/postEdit.php");
       break;
 
       case 'delete':
@@ -40,7 +40,6 @@
         unlink("./img/post_id/".$delimg['imgName']);
         
         $deleteCmd = "DELETE FROM post_tb WHERE post_id = '$postid'";
-
         if($dbCon->query($deleteCmd)===true){
           header("Location: http://localhost/fproject/pages/yourpost.php");
         }

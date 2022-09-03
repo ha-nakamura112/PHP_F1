@@ -1,3 +1,64 @@
-.adminPost-main {
+
+
+.horizontal-list-post {
+  overflow-x: auto;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+  width: 100%;
+  font-weight: 400;
+
+}
+
+.item {
+
+  width: 90%;
+  padding: 20px;
+  padding-bottom: 5px;
+
+}
+
+.adminUser-post {
+  background-color: #FBFBFB;
+  padding-right: 20px;
+}
+
+.adminUser-post table {
+  border-collapse: collapse;
+  border-spacing: 0;
   
+}
+
+
+.adminUser-post table tr {
+padding: 20px;
+
+}
+.adminUser-post table td {
+padding: 20px;
+
+}
+.adminUser-post table tr td{
+padding: 20px;
+width: 20px;
+color: #333333;
+font-weight: 400;
+text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  max-width: 0;
+
+}
+
+
+.adminUser-post table tr:nth-child(odd) {
+  background-color: rgb(237, 237, 237);
+}
+
+.filedName{
+  background-color: #9d9d9d!important;
+  color:#fff!important;
+  width:1px;
+  padding: 20px; 
+  font-weight: 400;
+  text-align: left;
 }

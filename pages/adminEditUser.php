@@ -1,35 +1,36 @@
 <?php
-  include '../configfinal.php';
+  include './configfinal.php';
 
 //$_SESSION['user'] always has user email, and $_SESSION['admin'] is user_id
-  if(!isset($_SESSION['user'])){
-    header("Location: http://localhost/fproject/pages/loginCon.php"); //loginpage
-  }else{
-    $email = $_SESSION['user'];
-    $logCmd = "SELECT * FROM user_tb WHERE email='$email'";
-    $useresult = $dbCon->query($logCmd);
-    if($useresult->num_rows > 0){
-      $user = $useresult->fetch_assoc();
-    }
+if(isset($_SESSION['user'])){ 
+  $useremail = $_SESSION['user'];
+  $logCmd = "SELECT * FROM user_tb WHERE email='$useremail'";
+  $useresult = $dbCon->query($logCmd);
+  if($useresult->num_rows > 0){
+    $userdetail = $useresult->fetch_assoc(); 
+    // $userdetail is about admin
   }
-
-  //
-  if(isset($_GET['user'])){ 
-    $_SESSION['user']=$user['email'];
-    $_SESSION['admin']= $_GET['user'];//
-    $dbCon->close();
-    print_r($_SESSION['user']); //akane
-    print_r($_SESSION['admin']); //16
-    header("Location: http://localhost/fproject/pages/adminEditUser.php");
-  }
+}
 
   $userArray = [];
-  $postCmd = "SELECT user_id, firstName, lastName, atype, dob, email, profImg, refImg, badge1, tamImg, badge2, profileContent FROM user_tb";
+  $postCmd = "SELECT user_id, firstName, lastName, atype, dob, email, profImg, refImg, badge1, tamImg, badge2, profileContent FROM user_tb ";
   $result = $dbCon->query($postCmd);
   if($result->num_rows > 0){
     $userData = $result->fetch_assoc();
     while($row = $result->fetch_assoc()){
       array_push($userArray,$row);
+    }
+  }
+
+
+  $id = $_SESSION['admin']; 
+  if($_SERVER['REQUEST_METHOD']=='POST'){
+    $updateCmd = "UPDATE user_tb SET  badge1='".$_POST['badge1']."', badge2='".$_POST['badge2']."' WHERE user_id='".$id."'";
+    if($dbCon->query($updateCmd) === true){
+      $_SESSION['user']= $useremail;
+      header("Location:http://localhost/fproject/pages/adminuser.php");
+    }else{
+      echo $dbCon->error;
     }
   }
  ?>
@@ -65,10 +66,10 @@ include '../masterpages/loggedInHeader.php';
         if($user['user_id'] == $id){
           switch($field){
             case 'badge1':
-              echo '<td><form method="POST" action="#"><select name="badge1"><option>unsubmitted</option><option>waiting</option><option>verified</option></select></td>';
+              echo '<td><form method="POST" action="'.$_SERVER['PHP_SELF'].'"><select class="badge-select" name="badge1"><option>unsubmitted</option><option>waiting</option><option>verified</option></select></td>';
             break;
             case 'badge2' :
-              echo '<td><form method="POST" action="#"><select name="badge2"><option>unsubmitted</option><option>waiting</option><option>verified</option></select></td>';
+              echo '<td><form method="POST" action="'.$_SERVER['PHP_SELF'].'"><select class="badge-select" name="badge2"><option>unsubmitted</option><option>waiting</option><option>verified</option></select></td>';
             break;
             default :
             echo "<td>".$userDetail."</td>";   
@@ -79,10 +80,9 @@ include '../masterpages/loggedInHeader.php';
       }
 
       if($user['user_id'] == $id){
-      echo "<td><button type='submit'>Updated</button></form></td>";
+      echo "<td><button class='editUser-save-btn' type='submit'>Updated</button></form></td>";
       }else{
         echo "<td></td>";
-        //other place, how to design
       }
     }
       echo "</tr>";
@@ -100,8 +100,3 @@ include '../masterpages/loggedInHeader.php';
 
 </body>
 </html>
-
-<!-- echo '<td><form method="POST" action="echo "'.$_SERVER['PHP_SELF'].'"><select name="badge1"><option>unsubmitted</option><option>waiting</option><option>verified</option></select></td>';
-            break;
-            case 'badge2' :
-              echo '<td><form method="POST" action="echo "'.$_SERVER['PHP_SELF'].'"><select name="badge2"><option>unsubmitted</option><option>waiting</option><option>verified</option></select></td>'; -->
