@@ -1,8 +1,7 @@
 <?php
-//!important
   include './configfinal.php';
 
-  if(!isset($_SESSION['user'])){
+  if(!isset($_SESSION['user']) || $_SESSION['timeout'] < time()){
     header("Location: http://localhost/fproject/pages/loginCon.php"); //loginpage
   }else{
     $email = $_SESSION['user'];
@@ -16,6 +15,7 @@
   if(isset($_GET['user'])){
     $deleteCmd = "DELETE FROM post_tb WHERE post_id ='".$_GET['user']."'";
     if($dbCon->query($deleteCmd)===true){
+      $_SESSION['timeout'] = time()+900;
       header("Location: http://localhost/fproject/pages/adminPost.php");
     }
     echo $dbCon->error;

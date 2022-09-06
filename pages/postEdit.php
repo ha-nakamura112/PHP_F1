@@ -1,9 +1,17 @@
 <?php
   include './configfinal.php';
 
-  if(!isset($_SESSION['post_id'])){
-    header("Location: http://localhost/fproject/pages/loginCon.php"); //loginpage
+  if(!isset($_SESSION['user']) || !isset($_SESSION['post_id'])){
+    header("Location: http://localhost/fproject/pages/loginCon.php"); 
   }else{
+  // for header
+    $email = $_SESSION['user'];
+    $logCmd = "SELECT * FROM user_tb WHERE email='$email'";
+    $useresult = $dbCon->query($logCmd);
+    if($useresult->num_rows > 0){
+      $user = $useresult->fetch_assoc();
+    }
+
     $post = $_SESSION['post_id'];
     $logCmd = "SELECT * FROM post_tb WHERE post_id='$post'";
     $postresult = $dbCon->query($logCmd);
@@ -13,7 +21,6 @@
       echo $dbCon->error;
     }
   }
-
 ?>
 
 <?php include '../masterpages/loggedInHeader.php'
@@ -51,6 +58,7 @@
 
 <?php
  if($_SERVER['REQUEST_METHOD']=='POST'){
+  $_SESSION['timeout'] = time()+900;
   if(uploadfile('./img/post_img/','postImg')=='true'){
     $postImg = $_FILES['postImg']['name'];
     $updateCmd = "UPDATE post_tb SET title ='".$_POST['title']."',postContent='".$_POST['content']."',p_date='".$_POST['date']."',imgName='".$postImg."'  WHERE post_id = '$post'";

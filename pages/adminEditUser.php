@@ -2,13 +2,13 @@
   include './configfinal.php';
 
 //$_SESSION['user'] always has user email, and $_SESSION['admin'] is user_id
-if(isset($_SESSION['user'])){ 
+if(isset($_SESSION['user']) || $_SESSION['timeout'] < time()){ 
   $useremail = $_SESSION['user'];
   $logCmd = "SELECT * FROM user_tb WHERE email='$useremail'";
   $useresult = $dbCon->query($logCmd);
   if($useresult->num_rows > 0){
-    $userdetail = $useresult->fetch_assoc(); 
-    // $userdetail is about admin
+    $user = $useresult->fetch_assoc(); 
+    // $user is about admin
   }
 }
 
@@ -23,11 +23,11 @@ if(isset($_SESSION['user'])){
   }
 
 
-  $id = $_SESSION['admin']; 
-  if($_SERVER['REQUEST_METHOD']=='POST'){
-    $updateCmd = "UPDATE user_tb SET  badge1='".$_POST['badge1']."', badge2='".$_POST['badge2']."' WHERE user_id='".$id."'";
+  $id = $_SESSION['admin'];   if($_SERVER['REQUEST_METHOD']=='POST'){
+    $updateCmd = "UPDATE user_tb SET  badge1='".$_POST['badge1']."', badge2='".$_POST['badge2']."' WHERE user_id='$id'";
     if($dbCon->query($updateCmd) === true){
       $_SESSION['user']= $useremail;
+      $_SESSION['timeout'] = time()+900;
       header("Location:http://localhost/fproject/pages/adminuser.php");
     }else{
       echo $dbCon->error;
@@ -60,10 +60,10 @@ include '../masterpages/loggedInHeader.php';
     echo "<th class='filedName'>Save</th>";
     echo "</tr><thead><tbody class='item'>";
 
-    foreach($userArray as $user){
+    foreach($userArray as $users){
       echo "<tr>";
-      foreach($user as $field=>$userDetail){
-        if($user['user_id'] == $id){
+      foreach($users as $field=>$userDetail){
+        if($users['user_id'] == $id){
           switch($field){
             case 'badge1':
               echo '<td><form method="POST" action="'.$_SERVER['PHP_SELF'].'"><select class="badge-select" name="badge1"><option>unsubmitted</option><option>waiting</option><option>verified</option></select></td>';
@@ -79,7 +79,7 @@ include '../masterpages/loggedInHeader.php';
         }
       }
 
-      if($user['user_id'] == $id){
+      if($users['user_id'] == $id){
       echo "<td><button class='editUser-save-btn' type='submit'>Updated</button></form></td>";
       }else{
         echo "<td></td>";

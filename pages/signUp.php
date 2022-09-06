@@ -6,13 +6,80 @@
     $_SESSION['token'] = $token;
   }
 ?>
-
 <?php
 include '../masterpages/logOutHeader.php';
+
+if($_SERVER['REQUEST_METHOD']=='POST'){
+  //check token to verify 
+  if(!isset($_POST['token']) || $_POST['token'] !== $_SESSION['token']){
+    echo 'invalid';
+  }else{
+    if($_POST['fname'] != '' && $_POST['lname'] != '' && $_POST['atype'] != '' && $_POST['dob'] != '' && $_POST['email'] != '' && $_POST['conPass'] != '' && $_POST['pass'] != ''){
+      if(!filter_var(filter_var($_POST['email'],FILTER_SANITIZE_EMAIL),FILTER_VALIDATE_EMAIL)){
+        echo 'email invalid';
+      }else{
+        $fname = $_POST['fname'];
+        $lname = $_POST['lname']; 
+        $atype = $_POST['atype'];
+        $dob = $_POST['dob']; 
+        $email = $_POST['email'];
+
+        if(uploadfile('./img/profile_img/','profImg')=='true'){
+          $profImg = $_FILES['profImg']['name'];
+        } 
+        if(is_uploaded_file($_FILES['refImg']['tmp_name']) || is_uploaded_file($_FILES['tamImg']['tmp_name']) ){
+          if(uploadfile('./img/ref_img/','refImg')=='true'){
+            $refImg = $_FILES['refImg']['name'];
+            $badge1 ='waiting';
+          }else{
+            $refImg = "";
+            $badge1 ='unsubmitted';
+          }
+          if(uploadfile('./img/tam_img/','tamImg')=='true'){
+            $tamImg = $_FILES['tamImg']['name'];
+            $badge2 = 'waiting';
+          }else{
+            $tamImg = '';
+            $badge2 ='unsubmitted';
+          }
+        }else{
+          $refImg = "";
+          $tamImg = '';
+          $badge1 ='unsubmitted';
+          $badge2 ='unsubmitted';
+        }
+        if($_POST['pass'] != $_POST['conPass']){
+          echo 'password confirmation is not valid';
+        }else{
+          if(strlen($_POST['pass']) < 8){
+            echo '<h1>password should be more longer</h1>';
+          }else{
+          $pass = password_hash($_POST['pass'],PASSWORD_BCRYPT,["cost"=>5]); 
+          $insertCmd = "INSERT INTO user_tb(firstName, lastName, atype, dob, email, pass, profImg, refImg, badge1, tamImg, badge2,profileContent) VALUES ('$fname','$lname','$atype','$dob','$email','$pass','$profImg','$refImg','$badge1','$tamImg','$badge2','no posted')"; 
+          if($dbCon->query($insertCmd)){
+            $_SESSION['user'] = $email;
+            $_SESSION['timeout'] = time()+900;
+              if($_POST['atype'] =='Admin'){
+              $dbCon->close();
+              header("Location:http://localhost/fproject/pages/adminuser.php");
+              }else{
+              $dbCon->close();
+              header("Location:http://localhost/fproject/pages/yourpost.php");
+              }
+            }else{
+              echo $dbCon->error;
+            }
+          }
+        }
+      }
+    }else{
+      echo 'fill out every answers';
+    }   
+  }
+}
 ?>
   <main class="signUp-main">
     <h1>Sign up</h1>
-    <!-- should change inside of action -->
     <form class="accountSetting-form" method="POST" action="<?php echo $_SERVER['PHP_SELF']; ?>" enctype="multipart/form-data">
       <h5>
         <div class="required">*</div>is required
@@ -75,84 +142,13 @@ include '../masterpages/logOutHeader.php';
     </form>
     <div class="moveToLogin">
     <a href="./loginCon.php">Do you have an account?</a>
-  </div>
-<!-- FOOTER -->
-<?php
-  include '../masterpages/footer.php';
-  ?>
+</div>
+
 
 <?php
-if($_SERVER['REQUEST_METHOD']=='POST'){
-  //check token to verify 
-  if(!isset($_POST['token']) || $_POST['token'] !== $_SESSION['token']){
-    echo 'invalid';
-  }else{
-    if($_POST['fname'] != '' && $_POST['lname'] != '' && $_POST['atype'] != '' && $_POST['dob'] != '' && $_POST['email'] != '' && $_POST['conPass'] != '' && $_POST['pass'] != '' && $_FILES['profImg'] != '' ){
-      if(!filter_var(filter_var($_POST['email'],FILTER_SANITIZE_EMAIL),FILTER_VALIDATE_EMAIL)){
-        echo 'email invalid';
-      }else{
-        $fname = $_POST['fname'];
-        $lname = $_POST['lname']; 
-        $atype = $_POST['atype'];
-        $dob = $_POST['dob']; 
-        $email = $_POST['email'];
-    
-        // $profdestDir = './img/profile_img/';
-        // $refdestDir = './img/ref_img/';
-        // $tamdestDir = './img/tam_img/';
-
-        if(uploadfile('./img/profile_img/','profImg')=='true' ){
-          // unlink("./img/profile_img/".$user['profImg']);
-          $profImg = $_FILES['profImg']['name'];
-        } 
-        if(uploadfile('./img/ref_img/','refImg')=='true'){
-          $refImg = $_FILES['refImg']['name'];
-          $badge1 ='waiting';
-        }else{
-          $refImg = "";
-          $badge1 ='unsubmitted';
-        }
-        if(uploadfile('./img/tam_img/','tamImg')=='true'){
-          $tamImg = $_FILES['tamImg']['name'];
-          $badge2 = 'waiting';
-        }else{
-          $tamImg = '';
-          $badge2 ='unsubmitted';
-        }
-
-        $_SESSION['timeout'] = time()+900;
-        if($_POST['pass'] != $_POST['conPass']){
-          echo 'password confirmation is not valid';
-        }else{
-          if(strlen($_POST['pass']) < 8){
-            echo '<h1>password should be more longer</h1>';
-          }else{
-
-          $pass = password_hash($_POST['pass'],PASSWORD_BCRYPT,["cost"=>5]); 
-          $insertCmd = "INSERT INTO user_tb(firstName, lastName, atype, dob, email, pass, profImg, refImg, badge1, tamImg, badge2,profileContent) VALUES ('$fname','$lname','$atype','$dob','$email','$pass','$profImg','$refImg','$badge1','$tamImg','$badge2','no posted')"; 
-            if($dbCon->query($insertCmd)){
-            echo "<h1>Succesfully</h1>";
-            $_SESSION['user'] = $email;
-        
-              if($atype == 'Admin'){
-              $dbCon->close();
-              header("Location: http://localhost/fproject/pages/adminuser.php");// adminHP
-              }else{
-                $dbCon->close();
-                header("Location: http://localhost/fproject/pages/yourpost.php"); //userHp
-              }
-            }
-          }
-        }
-      }
-    }else{
-      echo 'fill out every answers';
-    }   
-  }
-}
-
+// FOOTER
+include '../masterpages/footer.php';
 ?>
 
-
-  </body>
-  </html>
+</body>
+</html>

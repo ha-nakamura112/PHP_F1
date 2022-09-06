@@ -34,10 +34,6 @@ include '../masterpages/logOutHeader.php';
             </form>
         </article>
     </main>
-      <!-- FOOTER -->
-  <?php
-  include '../masterpages/footer.php';
-  ?>
    <?php
       if($_SERVER['REQUEST_METHOD']=='POST'){
         //check token to verify 
@@ -77,5 +73,9 @@ include '../masterpages/logOutHeader.php';
       }
   }
     ?>
+  <!-- FOOTER -->
+  <?php
+    include '../masterpages/footer.php';
+  ?>
 </body>
 </html>

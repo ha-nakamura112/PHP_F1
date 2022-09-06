@@ -1,7 +1,7 @@
 <?php
   include './configfinal.php';
 
-  if(!isset($_SESSION['user'])){
+  if(!isset($_SESSION['user']) || $_SESSION['timeout'] < time()){
     header("Location: http://localhost/fproject/pages/loginCon.php"); //loginpage
   }else{
     $email = $_SESSION['user'];
@@ -59,7 +59,6 @@ include '../masterpages/loggedInHeader.php';
          echo '<input type="email" name="email" value="'.$user['email'].'" placeholder ="example@tamhousing.jp">';
        ?>
       </section>
-    <!-- should change pass and confirm -->
     <section class="accountSetting-section">
     <label for="pass">Password<div class="required">*</div></label>
     <?php
@@ -71,7 +70,7 @@ include '../masterpages/loggedInHeader.php';
       <label for="profImg">Profile Picture</label>
       <article>
       <?php
-         echo '<input type="file" name="profImg" >';
+         echo '<input type="file" name="profImg">';
        ?>
       </article>
       </section>
@@ -99,18 +98,21 @@ include '../masterpages/loggedInHeader.php';
   include '../masterpages/dashboard02.php';
   ?>
   <!-- FOOTER -->
-  <?php
-  include '../masterpages/footer.php';
-  ?>
 
 <?php 
   if($_SERVER['REQUEST_METHOD']=='POST'){
-
-    if(uploadfile('./img/profile_img/','profImg')==='true' ){
-      unlink("./img/profile_img/".$user['profImg']);
-      $profImg = $_FILES['profImg']['name'];
-    } 
+    $_SESSION['timeout'] = time()+900;
     
+    if(!is_uploaded_file($_FILES['profImg']['tmp_name'])){
+      $profImg = $user['profImg'];
+    }else{
+      if(uploadfile('./img/profile_img/','profImg')=='true'){
+        unlink("./img/profile_img/".$user['profImg']."");
+        $profImg = $_FILES['profImg']['name'];
+      }else{
+        echo '<div class= "account-saved"><h4>upload error<h4></div>';
+      }
+    }
     //if user already submitted document and it's still waiting
     if(isset($user['refImg']) && $user['badge1'] != 'verified'){
       //file name is updated or still same, and badge1 is waiting
@@ -141,17 +143,20 @@ include '../masterpages/loggedInHeader.php';
     
     if(password_verify($_POST['pass'],$user['pass'])){
       $pass = password_hash($_POST['pass'],PASSWORD_BCRYPT,["cost"=>5]); 
-      $updateCmd = "UPDATE user_tb SET firstName='".$_POST['fname']."',lastName='".$_POST['lname']."',atype='".$_POST['atype']."',dob='".$_POST['dob']."',email='".$_POST['email']."',pass='".$pass."',profImg='".$_FILES['profImg']['name']."',refImg='".$_FILES['refImg']['name']."',badge1='".$badge1."',tamImg='".$_FILES['tamImg']['name']."',badge2='".$badge2."' WHERE user_id='".$user['user_id']."'";
-  
+      $updateCmd = "UPDATE user_tb SET firstName='".$_POST['fname']."',lastName='".$_POST['lname']."',atype='".$_POST['atype']."',dob='".$_POST['dob']."',email='".$_POST['email']."',pass='".$pass."',profImg='".$profImg."',refImg='".$refImg."',badge1='".$badge1."',tamImg='".$tamImg."',badge2='".$badge2."' WHERE user_id='".$user['user_id']."'";
+      
       if($dbCon->query($updateCmd) === true){
         $dbCon->close();
-        echo "<h5>saved<h5>"; 
+        echo '<div class= "account-saved"><i class="fa-solid fa-circle-check"></i><h4>saved<h4></div>'; 
       }else{
-        echo "failed";
+        echo '<div class= "account-saved"><h4>failed<h4></div>';
       }
     }
   }
   ?>
 
+  <?php
+  include '../masterpages/footer.php';
+  ?>
   </body>
   </html>

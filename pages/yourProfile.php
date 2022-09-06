@@ -1,8 +1,8 @@
 <?php
   include './configfinal.php';
 
-  if(!isset($_SESSION['user'])){
-    header("Location: "); //loginpage
+  if(!isset($_SESSION['user']) || $_SESSION['timeout'] < time()){
+    header("Location: http://localhost/fproject/pages/loginCon.php"); //loginpage
   }else{
     $email = $_SESSION['user'];
     $logCmd = "SELECT * FROM user_tb WHERE email='$email'";
@@ -18,7 +18,7 @@
   ?>
     <main class="yourProfile-main">
     <?php include '../masterpages/dashboard01.php' ?>
-        <form class="yourProfile-form" method="POST" action="#" enctype="multipart/form-data">
+        <form class="yourProfile-form" method="POST" action="<?php $_SERVER['PHP_SELF']; ?>" enctype="multipart/form-data">
             <?php echo '<img src="./img/profile_img/'.$user['profImg'].'">';?>
             <label for="profImg">Profile image</label>
               <article class="yourProfile-article">
@@ -37,6 +37,8 @@
     <?php
 
 if($_SERVER['REQUEST_METHOD']=='POST'){
+  $_SESSION['timeout'] = time()+900;
+  
   if(uploadfile('./img/profile_img/','profImg')=='true'){
     unlink("./img/profile_img/".$user['profImg']);
     $profImg = $_FILES['profImg']['name'];
@@ -54,5 +56,4 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
 ?>
 
 </body>
-
 </html>

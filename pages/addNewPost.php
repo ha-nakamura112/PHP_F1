@@ -1,7 +1,7 @@
 <?php
   include './configfinal.php';
 
-  if(!isset($_SESSION['user'])){
+  if(!isset($_SESSION['user']) || $_SESSION['timeout'] < time()){
     header("Location: http://localhost/fproject/pages/loginCon.php"); //loginpage
   }else{
     $email = $_SESSION['user'];
@@ -11,8 +11,6 @@
       $user = $useresult->fetch_assoc();
     }
   }
-  // timeout(time(),$dbCon);
-  // to reset timeout is it correct?
   ?>
 
 
@@ -20,10 +18,10 @@
   include '../masterpages/loggedInHeader.php';
   ?>
 
-  <main>
-  <?php
+<main>
+<?php
     include '../masterpages/dashboard01.php';
-    ?>
+?>
 
   <form class="addNewPost-form" method="POST" action="<?php echo $_SERVER['PHP_SELF']; ?>" enctype="multipart/form-data">
       <label for="postImg">Image</label>
@@ -33,25 +31,19 @@
       <label for="title">Title</label>
       <input type="text" name="title" required>
       <label for="date">Date</label>
-      <input type="date" name="date" required>
+      <input type="date" name="date" value="<?php strtotime(time()); ?>" required>
       <label for="content">Content</label>
       <textarea name="content" required></textarea>
 
       <div class="addNewPost-btn">
         <button type="submit">Save</button>
       </div>
-  </form>
-  <?php
+<?php
     include '../masterpages/dashboard02.php';
-    ?>
-  <?php
-    include '../masterpages/footer.php';
-    ?>
-  
-  
-<?php 
+    
     if($_SERVER['REQUEST_METHOD']=="POST"){
-      if(uploadfile('./img/post_img/','postImg')==='true'){
+      $_SESSION['timeout'] = time()+900;
+      if(uploadfile('./img/post_img/','postImg')=='true'){
           $title = $_POST['title'];
           $date = $_POST['date'];
           $postImg = $_FILES['postImg']['name'];
@@ -70,6 +62,11 @@
           echo "<h3>Please Upload an Image</h3>";
         }
       }   
+?>
+
+</form>
+<?php
+    include '../masterpages/footer.php';
 ?>
 
 </body>
